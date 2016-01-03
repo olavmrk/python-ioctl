@@ -1,0 +1,18 @@
+ioctl
+=====
+
+This Python module contains some simple helper functions for calling `fcntl.ioctl()`_.
+
+.. _`fcntl.ioctl()`: https://docs.python.org/3/library/fcntl.html#fcntl.ioctl
+
+Example
+-------
+
+::
+
+  import os
+  import ioctl
+  RNDGETENTCNT = 0x80045200
+  fd = os.open('/dev/random', os.O_RDONLY)
+  entropy_avail = ioctl.ioctl_size_t_get(fd, RNDGETENTCNT)
+  print('entropy_avail:', entropy_avail)
