@@ -12,4 +12,6 @@ setup(
     maintainer_email = 'olavmrk@gmail.com',
     url = 'https://github.com/olavmrk/python-ioctl',
     download_url = 'https://github.com/olavmrk/python-ioctl/tarball/v{version}'.format(version=VERSION),
+    tests_require = [ 'mock' ],
+    test_suite = 'tests',
 )
