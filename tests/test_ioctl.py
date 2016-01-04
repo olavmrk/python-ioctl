@@ -31,13 +31,13 @@ def _ioctl_get_generator(retval):
 class TestMain(unittest.TestCase):
 
     @mock.patch('fcntl.ioctl', new=_ioctl_get_generator(retval=ctypes.c_size_t(123)))
-    def test_ioctl_size_t_get(self):
-        ret = ioctl.ioctl_size_t_get(5, 7)
+    def test_ioctl_size_t(self):
+        ret = ioctl.ioctl_size_t(5, 7)
         self.assertEquals(ret, 123)
 
     @mock.patch('fcntl.ioctl', new=_ioctl_get_generator(retval=ctypes.c_int(123)))
-    def test_ioctl_int_get(self):
-        ret = ioctl.ioctl_int_get(5, 7)
+    def test_ioctl_int(self):
+        ret = ioctl.ioctl_int(5, 7)
         self.assertEquals(ret, 123)
 
 if __name__ == '__main__':
