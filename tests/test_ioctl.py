@@ -1,7 +1,6 @@
 import array
 import ctypes
 import fcntl
-import sys
 import unittest
 
 import ioctl
