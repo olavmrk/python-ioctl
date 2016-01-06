@@ -100,5 +100,25 @@ class TestMain(unittest.TestCase):
             self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_int))
             self.assertEqual(kwargs['mutate_flag'], True)
 
+    def test_ioctl_buffer_value(self):
+        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=b'\x01\x02')) as ioctl_mock:
+            ret = ioctl.ioctl_buffer(5, 7, value=b'\x02\x01')
+            self.assertEqual(ret, b'\x01\x02')
+            kwargs = ioctl_mock.call_args[1]
+            self.assertEqual(kwargs['fd'], 5)
+            self.assertEqual(kwargs['op'], 7)
+            self.assertEqual(len(kwargs['arg']), 2)
+            self.assertEqual(kwargs['mutate_flag'], True)
+
+    def test_ioctl_buffer_length(self):
+        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=b'\x01\x02')) as ioctl_mock:
+            ret = ioctl.ioctl_buffer(5, 7, length=2)
+            self.assertEqual(ret, b'\x01\x02')
+            kwargs = ioctl_mock.call_args[1]
+            self.assertEqual(kwargs['fd'], 5)
+            self.assertEqual(kwargs['op'], 7)
+            self.assertEqual(len(kwargs['arg']), 2)
+            self.assertEqual(kwargs['mutate_flag'], True)
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,21 @@
 import ctypes
 import fcntl
+import sys
+
+# In Python 2, the bytearray()-type does not support the buffer interface,
+# and can therefore not be used in ioctl().
+# This creates a couple of helper functions for converting to and from 
+if sys.version_info < (3, 0):
+    import array
+    def _to_bytearray(value):
+        return array.array('B', value)
+    def _from_bytearray(value):
+        return value.tostring()
+else:
+    def _to_bytearray(value):
+        return bytearray(value)
+    def _from_bytearray(value):
+        return bytes(value)
 
 def ioctl_int(fd, op, value=0):
     res = ctypes.c_int(value)
@@ -10,3 +26,16 @@ def ioctl_size_t(fd, op, value=0):
     res = ctypes.c_size_t(value)
     fcntl.ioctl(fd, op, res)
     return res.value
+
+def ioctl_buffer(fd, op, value=None, length=None):
+    op = int(op)
+    if value is None and length is None:
+        raise ValueError('Must specify either `value` or `length`')
+    if value is not None and length is not None:
+        raise ValueError('Cannot specify both `value` and `length`')
+    if value is None:
+        value = [0] * length
+    data = _to_bytearray(value)
+    fcntl.ioctl(fd, op, data)
+    data = _from_bytearray(data)
+    return data
