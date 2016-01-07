@@ -77,46 +77,46 @@ class IoctlMock(mock.MagicMock):
 
 class TestMain(unittest.TestCase):
 
-    def test_ioctl_size_t(self):
-        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=ctypes.c_size_t(123))) as ioctl_mock:
-            ret = ioctl.ioctl_size_t(5, 7)
-            self.assertEqual(ret, 123)
-            kwargs = ioctl_mock.call_args[1]
-            self.assertEqual(kwargs['fd'], 5)
-            self.assertEqual(kwargs['op'], 7)
-            self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_size_t))
-            self.assertEqual(kwargs['mutate_flag'], True)
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_size_t(123))
+    def test_ioctl_size_t(self, ioctl_mock):
+        ret = ioctl.ioctl_size_t(5, 7)
+        self.assertEqual(ret, 123)
+        kwargs = ioctl_mock.call_args[1]
+        self.assertEqual(kwargs['fd'], 5)
+        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_size_t))
+        self.assertEqual(kwargs['mutate_flag'], True)
 
 
-    def test_ioctl_int(self):
-        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=ctypes.c_int(123))) as ioctl_mock:
-            ret = ioctl.ioctl_int(5, 7)
-            self.assertEqual(ret, 123)
-            kwargs = ioctl_mock.call_args[1]
-            self.assertEqual(kwargs['fd'], 5)
-            self.assertEqual(kwargs['op'], 7)
-            self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_int))
-            self.assertEqual(kwargs['mutate_flag'], True)
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_int(123))
+    def test_ioctl_int(self, ioctl_mock):
+        ret = ioctl.ioctl_int(5, 7)
+        self.assertEqual(ret, 123)
+        kwargs = ioctl_mock.call_args[1]
+        self.assertEqual(kwargs['fd'], 5)
+        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_int))
+        self.assertEqual(kwargs['mutate_flag'], True)
 
-    def test_ioctl_buffer_value(self):
-        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=b'\x01\x02')) as ioctl_mock:
-            ret = ioctl.ioctl_buffer(5, 7, value=b'\x02\x01')
-            self.assertEqual(ret, b'\x01\x02')
-            kwargs = ioctl_mock.call_args[1]
-            self.assertEqual(kwargs['fd'], 5)
-            self.assertEqual(kwargs['op'], 7)
-            self.assertEqual(len(kwargs['arg']), 2)
-            self.assertEqual(kwargs['mutate_flag'], True)
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02')
+    def test_ioctl_buffer_value(self, ioctl_mock):
+        ret = ioctl.ioctl_buffer(5, 7, value=b'\x02\x01')
+        self.assertEqual(ret, b'\x01\x02')
+        kwargs = ioctl_mock.call_args[1]
+        self.assertEqual(kwargs['fd'], 5)
+        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(len(kwargs['arg']), 2)
+        self.assertEqual(kwargs['mutate_flag'], True)
 
-    def test_ioctl_buffer_length(self):
-        with mock.patch('fcntl.ioctl', new=IoctlMock(set_value=b'\x01\x02')) as ioctl_mock:
-            ret = ioctl.ioctl_buffer(5, 7, length=2)
-            self.assertEqual(ret, b'\x01\x02')
-            kwargs = ioctl_mock.call_args[1]
-            self.assertEqual(kwargs['fd'], 5)
-            self.assertEqual(kwargs['op'], 7)
-            self.assertEqual(len(kwargs['arg']), 2)
-            self.assertEqual(kwargs['mutate_flag'], True)
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02')
+    def test_ioctl_buffer_length(self, ioctl_mock):
+        ret = ioctl.ioctl_buffer(5, 7, length=2)
+        self.assertEqual(ret, b'\x01\x02')
+        kwargs = ioctl_mock.call_args[1]
+        self.assertEqual(kwargs['fd'], 5)
+        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(len(kwargs['arg']), 2)
+        self.assertEqual(kwargs['mutate_flag'], True)
 
 if __name__ == '__main__':
     unittest.main()
