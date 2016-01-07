@@ -14,5 +14,5 @@ Example
   import ioctl
   RNDGETENTCNT = 0x80045200
   fd = os.open('/dev/random', os.O_RDONLY)
-  entropy_avail = ioctl.ioctl_size_t_get(fd, RNDGETENTCNT)
+  entropy_avail = ioctl.ioctl_size_t(fd, RNDGETENTCNT)
   print('entropy_avail:', entropy_avail)
