@@ -1,5 +1,5 @@
-ioctl
-=====
+python-ioctl
+============
 
 This Python module contains some simple helper functions for calling `fcntl.ioctl()`_.
 

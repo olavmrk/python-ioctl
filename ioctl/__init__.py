@@ -18,16 +18,42 @@ else:
         return bytes(value)
 
 def ioctl_int(fd, op, value=0):
+    """Call ioctl() with an `int *` argument.
+
+    :param fd: File descriptor to operate on.
+    :param op: The ioctl request to call.
+    :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
+    :return The contents of the value parameter after the call to ioctl().
+    """
     res = ctypes.c_int(value)
     fcntl.ioctl(fd, op, res)
     return res.value
 
 def ioctl_size_t(fd, op, value=0):
+    """Call ioctl() with a `size_t *` argument.
+
+    :param fd: File descriptor to operate on.
+    :param op: ioctl request to call.
+    :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
+    :return: The contents of the value parameter after the call to ioctl().
+    """
     res = ctypes.c_size_t(value)
     fcntl.ioctl(fd, op, res)
     return res.value
 
 def ioctl_buffer(fd, op, value=None, length=None):
+    """Call ioctl() with a byte buffer argument.
+
+    You must specify either the `value` parameter or the `length` parameter.
+    If the `length` parameter is specified, this function will allocate a byte
+    buffer of the specified length to pass to ioctl().
+
+    :param fd: File descriptor to operate on.
+    :param op: ioctl request to call.
+    :param value: Optional contents of the byte buffer at the start of the call.
+    :param length: Optional length of the byte buffer.
+    :return: The contents of the value parameter after the call to ioctl().
+    """
     op = int(op)
     if value is None and length is None:
         raise ValueError('Must specify either `value` or `length`')
