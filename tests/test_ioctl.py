@@ -68,9 +68,9 @@ class IoctlMock(mock.MagicMock):
         for i, v in enumerate(bytearray(set_value)):
             arg_array[i] = v
 
-    def __call__(self, fd, op, arg=0, mutate_flag=True):
+    def __call__(self, fd, request, arg=0, mutate_flag=True):
         wrapped_arg = IoctlMock._arg_to_bytes(arg)
-        ret = super(IoctlMock, self).__call__(fd=fd, op=op, arg=wrapped_arg, mutate_flag=mutate_flag)
+        ret = super(IoctlMock, self).__call__(fd=fd, request=request, arg=wrapped_arg, mutate_flag=mutate_flag)
         self._set_arg_return(arg)
         return ret
 
@@ -83,7 +83,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ret, 123)
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
-        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_size_t))
         self.assertEqual(kwargs['mutate_flag'], True)
 
@@ -94,7 +94,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ret, 123)
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
-        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_int))
         self.assertEqual(kwargs['mutate_flag'], True)
 
@@ -104,7 +104,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ret, b'\x01\x02')
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
-        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), 2)
         self.assertEqual(kwargs['mutate_flag'], True)
 
@@ -114,7 +114,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ret, b'\x01\x02')
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
-        self.assertEqual(kwargs['op'], 7)
+        self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), 2)
         self.assertEqual(kwargs['mutate_flag'], True)
 
