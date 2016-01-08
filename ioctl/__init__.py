@@ -17,31 +17,31 @@ else:
     def _from_bytearray(value):
         return bytes(value)
 
-def ioctl_int(fd, op, value=0):
+def ioctl_int(fd, request, value=0):
     """Call ioctl() with an `int *` argument.
 
     :param fd: File descriptor to operate on.
-    :param op: The ioctl request to call.
+    :param request: The ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
     :return The contents of the value parameter after the call to ioctl().
     """
     res = ctypes.c_int(value)
-    fcntl.ioctl(fd, op, res)
+    fcntl.ioctl(fd, request, res)
     return res.value
 
-def ioctl_size_t(fd, op, value=0):
+def ioctl_size_t(fd, request, value=0):
     """Call ioctl() with a `size_t *` argument.
 
     :param fd: File descriptor to operate on.
-    :param op: ioctl request to call.
+    :param request: ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
     :return: The contents of the value parameter after the call to ioctl().
     """
     res = ctypes.c_size_t(value)
-    fcntl.ioctl(fd, op, res)
+    fcntl.ioctl(fd, request, res)
     return res.value
 
-def ioctl_buffer(fd, op, value=None, length=None):
+def ioctl_buffer(fd, request, value=None, length=None):
     """Call ioctl() with a byte buffer argument.
 
     You must specify either the `value` parameter or the `length` parameter.
@@ -49,12 +49,12 @@ def ioctl_buffer(fd, op, value=None, length=None):
     buffer of the specified length to pass to ioctl().
 
     :param fd: File descriptor to operate on.
-    :param op: ioctl request to call.
+    :param request: ioctl request to call.
     :param value: Optional contents of the byte buffer at the start of the call.
     :param length: Optional length of the byte buffer.
     :return: The contents of the value parameter after the call to ioctl().
     """
-    op = int(op)
+    request = int(request)
     if value is None and length is None:
         raise ValueError('Must specify either `value` or `length`')
     if value is not None and length is not None:
@@ -62,6 +62,6 @@ def ioctl_buffer(fd, op, value=None, length=None):
     if value is None:
         value = [0] * length
     data = _to_bytearray(value)
-    fcntl.ioctl(fd, op, data)
+    fcntl.ioctl(fd, request, data)
     data = _from_bytearray(data)
     return data
