@@ -17,7 +17,7 @@ else:
     def _from_bytearray(value):
         return bytes(value)
 
-def ioctl_int(fd, request, value=0):
+def ioctl_ptr_int(fd, request, value=0):
     """Call ioctl() with an `int *` argument.
 
     :param fd: File descriptor to operate on.
@@ -29,7 +29,7 @@ def ioctl_int(fd, request, value=0):
     fcntl.ioctl(fd, request, res)
     return res.value
 
-def ioctl_size_t(fd, request, value=0):
+def ioctl_ptr_size_t(fd, request, value=0):
     """Call ioctl() with a `size_t *` argument.
 
     :param fd: File descriptor to operate on.
@@ -41,8 +41,8 @@ def ioctl_size_t(fd, request, value=0):
     fcntl.ioctl(fd, request, res)
     return res.value
 
-def ioctl_buffer(fd, request, value=None, length=None):
-    """Call ioctl() with a byte buffer argument.
+def ioctl_ptr_buffer(fd, request, value=None, length=None):
+    """Call ioctl() with a `void *` argument.
 
     You must specify either the `value` parameter or the `length` parameter.
     If the `length` parameter is specified, this function will allocate a byte
