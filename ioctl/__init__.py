@@ -23,11 +23,14 @@ def ioctl_ptr_int(fd, request, value=0):
     :param fd: File descriptor to operate on.
     :param request: The ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
-    :return The contents of the value parameter after the call to ioctl().
+    :return: Tuple of `(ioctl_return, updated_value)`.
+            `ioctl_return` is the return value of the ioctl()-call, while
+            `updated_value` is the value of the integer argument after the
+            ioctl()-call.
     """
     res = ctypes.c_int(value)
-    fcntl.ioctl(fd, request, res)
-    return res.value
+    ioctl_return = fcntl.ioctl(fd, request, res)
+    return (ioctl_return, res.value)
 
 def ioctl_ptr_size_t(fd, request, value=0):
     """Call ioctl() with a `size_t *` argument.
@@ -35,11 +38,14 @@ def ioctl_ptr_size_t(fd, request, value=0):
     :param fd: File descriptor to operate on.
     :param request: ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
-    :return: The contents of the value parameter after the call to ioctl().
+    :return: Tuple of `(ioctl_return, updated_value)`.
+             `ioctl_return` is the return value of the ioctl()-call, while
+             `updated_value` is the value of the size_t argument after the
+             ioctl()-call.
     """
     res = ctypes.c_size_t(value)
-    fcntl.ioctl(fd, request, res)
-    return res.value
+    ioctl_return = fcntl.ioctl(fd, request, res)
+    return (ioctl_return, res.value)
 
 def ioctl_ptr_buffer(fd, request, value=None, length=None):
     """Call ioctl() with a `void *` argument.
@@ -52,7 +58,9 @@ def ioctl_ptr_buffer(fd, request, value=None, length=None):
     :param request: ioctl request to call.
     :param value: Optional contents of the byte buffer at the start of the call.
     :param length: Optional length of the byte buffer.
-    :return: The contents of the value parameter after the call to ioctl().
+    :return: Tuple of `(ioctl_return, updated_value)`.
+             `ioctl_return` is the return value of the ioctl()-call, while
+             `updated_value` is the contents of the buffer after the ioctl()-call.
     """
     request = int(request)
     if value is None and length is None:
@@ -62,6 +70,6 @@ def ioctl_ptr_buffer(fd, request, value=None, length=None):
     if value is None:
         value = [0] * length
     data = _to_bytearray(value)
-    fcntl.ioctl(fd, request, data)
+    ioctl_return = fcntl.ioctl(fd, request, data)
     data = _from_bytearray(data)
-    return data
+    return (ioctl_return, data)

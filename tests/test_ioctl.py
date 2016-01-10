@@ -77,10 +77,10 @@ class IoctlMock(mock.MagicMock):
 
 class TestMain(unittest.TestCase):
 
-    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_size_t(123))
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_size_t(123), return_value=321)
     def test_ioctl_ptr_size_t(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_size_t(5, 7)
-        self.assertEqual(ret, 123)
+        self.assertEqual(ret, (321, 123))
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
         self.assertEqual(kwargs['request'], 7)
@@ -88,30 +88,30 @@ class TestMain(unittest.TestCase):
         self.assertEqual(kwargs['mutate_flag'], True)
 
 
-    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_int(123))
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_int(123), return_value=321)
     def test_ioctl_ptr_int(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_int(5, 7)
-        self.assertEqual(ret, 123)
+        self.assertEqual(ret, (321, 123))
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
         self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), ctypes.sizeof(ctypes.c_int))
         self.assertEqual(kwargs['mutate_flag'], True)
 
-    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02')
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02', return_value=321)
     def test_ioctl_ptr_buffer_value(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_buffer(5, 7, value=b'\x02\x01')
-        self.assertEqual(ret, b'\x01\x02')
+        self.assertEqual(ret, (321, b'\x01\x02'))
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
         self.assertEqual(kwargs['request'], 7)
         self.assertEqual(len(kwargs['arg']), 2)
         self.assertEqual(kwargs['mutate_flag'], True)
 
-    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02')
+    @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=b'\x01\x02', return_value=321)
     def test_ioctl_ptr_buffer_length(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_buffer(5, 7, length=2)
-        self.assertEqual(ret, b'\x01\x02')
+        self.assertEqual(ret, (321, b'\x01\x02'))
         kwargs = ioctl_mock.call_args[1]
         self.assertEqual(kwargs['fd'], 5)
         self.assertEqual(kwargs['request'], 7)
