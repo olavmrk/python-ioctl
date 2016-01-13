@@ -86,6 +86,19 @@ def _ioc_type_size(size):
     else:
         raise TypeError('Invalid type for size: {size_type}'.format(size_type=type.__class__.__name__))
 
+def _ioc_request_type(request_type):
+    if isinstance(request_type, int):
+        return request_type
+    if isinstance(request_type, str):
+        if len(request_type) > 1:
+            raise ValueError('request_type string too long.')
+        elif len(request_type) == 0:
+            raise ValueError('request_type cannot be an empty string.')
+        return ord(request_type)
+    else:
+        raise ValueError('request_type must be an integer or a string, but was: {request_type_type}'
+                         .format(request_type_type=request_type.__class__.__name__))
+
 def IOC(direction, request_type, request_nr, size):
     calc = _machine_ioctl_calculator()
 
@@ -100,28 +113,28 @@ def IOC(direction, request_type, request_nr, size):
     else:
         raise ValueError('direction must be None, \'r\', \'w\' or \'rw\'.')
 
-    request_type = ord(request_type)
+    request_type = _ioc_request_type(request_type)
     return calc.ioc(direction, request_type, request_nr, size)
 
 def IO(request_type, request_nr):
     calc = _machine_ioctl_calculator()
-    request_type = ord(request_type)
+    request_type = _ioc_request_type(request_type)
     return calc.ioc(calc._IOC_NONE, request_type, request_nr, 0)
 
 def IOR(request_type, request_nr, size):
     calc = _machine_ioctl_calculator()
-    request_type = ord(request_type)
+    request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_READ, request_type, request_nr, size)
 
 def IOW(request_type, request_nr, size):
     calc = _machine_ioctl_calculator()
-    request_type = ord(request_type)
+    request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_WRITE, request_type, request_nr, size)
 
 def IOWR(request_type, request_nr, size):
     calc = _machine_ioctl_calculator()
-    request_type = ord(request_type)
+    request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_READ|calc._IOC_WRITE, request_type, request_nr, size)
