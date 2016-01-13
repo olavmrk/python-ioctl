@@ -79,9 +79,9 @@ def _machine_ioctl_calculator():
     return _machine_ioctl_map.get(machine, _IoctlGeneric)
 
 def _ioc_type_size(size):
-    if issubclass(size, ctypes._SimpleCData):
+    if isinstance(size, type) and issubclass(size, ctypes._SimpleCData):
         return ctypes.sizeof(size)
-    elif isinstance(int, size):
+    elif isinstance(size, int):
         return size
     else:
         raise TypeError('Invalid type for size: {size_type}'.format(size_type=type.__class__.__name__))
