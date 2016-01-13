@@ -66,3 +66,24 @@ class TestLinux(unittest.TestCase):
             raise
             raise unittest.SkipTest('Unable to build & run native program for dumping ioctl values.')
         self._test_values(native_values)
+
+def _main():
+    import platform
+    arch = platform.machine()
+    values = _native_values()
+
+    fmt = """
+    '{arch}': {{
+        'sizeof_int': {sizeof_int},
+        'sizeof_ff_effect': {sizeof_ff_effect},
+        'EVIOCSFF': 0x{EVIOCSFF:08x},
+        'BLKRRPART': 0x{BLKRRPART:08x},
+        'RNDGETENTCNT': 0x{RNDGETENTCNT:08x},
+        'RNDADDTOENTCNT': 0x{RNDADDTOENTCNT:08x},
+        'FIFREEZE': 0x{FIFREEZE:08x},
+    }},
+"""
+    print(fmt.format(arch=arch, **values))
+
+if __name__ == '__main__':
+    _main()
