@@ -1,4 +1,7 @@
 import ctypes
+import os
+import subprocess
+import tempfile
 import unittest
 
 try:
@@ -19,6 +22,18 @@ arch_values = {
         'FIFREEZE': 0xc0045877,
     },
 }
+
+def _native_values():
+    source_file = os.path.join(os.path.dirname(__file__), 'linux_ioctls.c')
+    exec_file_fd, exec_file = tempfile.mkstemp()
+    os.close(exec_file_fd)
+    try:
+        subprocess.check_output(['gcc', '-std=c99', '-Wall', '-o', exec_file, source_file], stderr=subprocess.STDOUT)
+        values = subprocess.check_output([exec_file])
+    finally:
+        os.unlink(exec_file)
+    values = eval(values)
+    return values
 
 class TestLinux(unittest.TestCase):
 
@@ -41,3 +56,13 @@ class TestLinux(unittest.TestCase):
     def test_i386(self):
         with mock.patch('platform.machine', return_value='i386'):
             self._test_values(arch_values['i386'])
+
+    def test_native(self):
+        try:
+            native_values = _native_values()
+        except:
+            # For some reason unable to compile & run the ioctl-printing program.
+            # Could be missing the GCC compiler or the linux headers.
+            raise
+            raise unittest.SkipTest('Unable to build & run native program for dumping ioctl values.')
+        self._test_values(native_values)
