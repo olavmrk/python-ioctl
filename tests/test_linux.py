@@ -24,8 +24,6 @@ class TestLinux(unittest.TestCase):
         RNDGETENTCNT = ioctl.linux.IOR('R', 0x00, ctypes.c_int)
         self.assertEqual(RNDGETENTCNT, 0x80045200)
 
-        RNDGETENTCNT = ioctl.linux.IOR('R', 0x00, 4)
-
         RNDADDTOENTCNT = ioctl.linux.IOW('R', 0x01, ctypes.c_int)
         self.assertEqual(RNDADDTOENTCNT, 0x40045201)
 
