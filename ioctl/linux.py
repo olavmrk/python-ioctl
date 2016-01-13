@@ -84,7 +84,7 @@ def _ioc_type_size(size):
     elif isinstance(size, int):
         return size
     else:
-        raise TypeError('Invalid type for size: {size_type}'.format(size_type=type.__class__.__name__))
+        raise TypeError('Invalid type for size: {size_type}'.format(size_type=size.__class__.__name__))
 
 def _ioc_request_type(request_type):
     if isinstance(request_type, int):
