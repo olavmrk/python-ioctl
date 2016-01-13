@@ -21,6 +21,15 @@ arch_values = {
         'RNDADDTOENTCNT': 0x40045201,
         'FIFREEZE': 0xc0045877,
     },
+    'x86_64': {
+        'sizeof_int': 4,
+        'sizeof_ff_effect': 48,
+        'EVIOCSFF': 0x40304580,
+        'BLKRRPART': 0x0000125f,
+        'RNDGETENTCNT': 0x80045200,
+        'RNDADDTOENTCNT': 0x40045201,
+        'FIFREEZE': 0xc0045877,
+    },
     'armv6l': {
         'sizeof_int': 4,
         'sizeof_ff_effect': 44,
@@ -65,6 +74,10 @@ class TestLinux(unittest.TestCase):
     def test_i386(self):
         with mock.patch('platform.machine', return_value='i386'):
             self._test_values(arch_values['i386'])
+
+    def test_x86_64(self):
+        with mock.patch('platform.machine', return_value='x86_64'):
+            self._test_values(arch_values['x86_64'])
 
     def test_armv6l(self):
         with mock.patch('platform.machine', return_value='armv6l'):
