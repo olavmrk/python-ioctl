@@ -9,6 +9,7 @@ Contents:
 
    self
    ioctl
+   linux
 
 Indices and tables
 ==================

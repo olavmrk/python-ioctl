@@ -100,6 +100,23 @@ def _ioc_request_type(request_type):
                          .format(request_type_type=request_type.__class__.__name__))
 
 def IOC(direction, request_type, request_nr, size):
+    """ Python implementation of the `_IOC(...)` macro from Linux.
+
+    This is a portable implementation of the `_IOC(...)` macro from Linux.
+    It takes a set of parameters, and calculates a ioctl request number based on those parameters.
+
+    :param direction: Direction of data transfer in this ioctl. This can be one of:
+
+                      * ``None``: No data transfer.
+                      * ``'r'``: Read-only (input) data.
+                      * ``'w'``: Write-only (output) data.
+                      * ``'rw'``: Read-write (input and output) data.
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :param size: The number of data bytes transferred in this ioctl.
+    :return: The calculated ioctl request number.
+    """
+
     calc = _machine_ioctl_calculator()
 
     if direction is None:
@@ -117,23 +134,66 @@ def IOC(direction, request_type, request_nr, size):
     return calc.ioc(direction, request_type, request_nr, size)
 
 def IO(request_type, request_nr):
+    """ Python implementation of the `_IO(...)` macro from Linux.
+
+    This is a portable implementation of the `_IO(...)` macro from Linux.
+    The `_IO(...)` macro calculates a ioctl request number for ioctl request that do not transfer any data.
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :return: The calculated ioctl request number.
+    """
+
     calc = _machine_ioctl_calculator()
     request_type = _ioc_request_type(request_type)
     return calc.ioc(calc._IOC_NONE, request_type, request_nr, 0)
 
 def IOR(request_type, request_nr, size):
+    """ Python implementation of the `_IOR(...)` macro from Linux.
+
+    This is a portable implementation of the `_IOR(...)` macro from Linux.
+    The `_IOR(...)` macro calculates a ioctl request number for ioctl request that only pass read-only (input) data.
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :param size: The size of the associated data. This can either be an integer or a ctypes type.
+    :return: The calculated ioctl request number.
+    """
+
     calc = _machine_ioctl_calculator()
     request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_READ, request_type, request_nr, size)
 
 def IOW(request_type, request_nr, size):
+    """ Python implementation of the `_IOW(...)` macro from Linux.
+
+    This is a portable implementation of the `_IOW(...)` macro from Linux.
+    The `_IOW(...)` macro calculates a ioctl request number for ioctl request that only pass write-only (output) data.
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :param size: The size of the associated data. This can either be an integer or a ctypes type.
+    :return: The calculated ioctl request number.
+    """
+
     calc = _machine_ioctl_calculator()
     request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_WRITE, request_type, request_nr, size)
 
 def IOWR(request_type, request_nr, size):
+    """ Python implementation of the `_IOWR(...)` macro from Linux.
+
+    This is a portable implementation of the `_IOWR(...)` macro from Linux.
+    The `_IOWR(...)` macro calculates a ioctl request number for ioctl request that use the data for both reading (input) and writing (output).
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :param size: The size of the associated data. This can either be an integer or a ctypes type.
+    :return: The calculated ioctl request number.
+    """
+
     calc = _machine_ioctl_calculator()
     request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
