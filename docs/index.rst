@@ -10,10 +10,3 @@ Contents:
    self
    ioctl
    linux
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
