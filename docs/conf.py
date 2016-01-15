@@ -4,6 +4,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+import ioctl.__version__
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
@@ -11,3 +13,7 @@ extensions = [
 ]
 
 master_doc = 'index'
+
+release = ioctl.__version__.VERSION
+# Calculate the version based on the first two parts of the release. I.e. "1.2.3" => "1.2"
+version = '.'.join(release.split('.', 3)[:2])
