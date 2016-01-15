@@ -9,3 +9,5 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.viewcode',
 ]
+
+master_doc = 'index'
