@@ -14,6 +14,8 @@ extensions = [
 
 master_doc = 'index'
 
+project = u'python-ioctl'
+
 release = ioctl.__version__.VERSION
 # Calculate the version based on the first two parts of the release. I.e. "1.2.3" => "1.2"
 version = '.'.join(release.split('.', 3)[:2])
