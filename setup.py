@@ -1,7 +1,9 @@
+import os
 import sys
 from setuptools import setup, find_packages
 
-VERSION = '0.0'
+with open(os.path.join(os.path.dirname(__file__), 'ioctl', '__version__.py')) as fh:
+    exec(fh.read())
 
 tests_require = [ ]
 if sys.version_info < (3, 3):
