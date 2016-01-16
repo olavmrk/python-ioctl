@@ -2,9 +2,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+import setuptools_scm
 
-import ioctl.__version__
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -16,7 +16,7 @@ master_doc = 'index'
 
 project = u'python-ioctl'
 
-release = ioctl.__version__.VERSION
+release = setuptools_scm.get_version()
 # Calculate the version based on the first two parts of the release. I.e. "1.2.3" => "1.2"
 version = '.'.join(release.split('.', 3)[:2])
 
