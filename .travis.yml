@@ -6,3 +6,13 @@ python:
   - "3.5"
 install: python setup.py install
 script: python setup.py test
+deploy:
+  provider: pypi
+  user: olavmrk
+  password:
+    secure: UYGZ6HSjkESKEwDrB5pO0wxEw+CF7/UuuPOKjA42RBq3n1IP65vpl0hNT64BwlQ2XiS+9PHbaqQsE2sIr8mrpQaJ9jTHq4KuZ/XdWDoUtL5FQyYeyU/KfbvGijUlZb53AegQZWBYClzKLU5XMXvkl9P9/GbIsVWv0Zl3S80NW3KFsaRI2k2OR3gqKNeKVp0ZSNDe1hqiZ2fQp89+87yNFh257KKHD2jJkppDXjbl0SSAaOUyNsOPC3D3JKuyRS8yvnVfLPOKShHQGtvpldMv6WTssn2ckqRxAHOtOIzrdmiBFBTXQpKagtfXj/WBR6mJb5gYxTvLWYt+ytm95T/Q6jR61jVJLcAzyc3+qVjqn7Ms0YiD7dUkFVcsarVT81srzXRDyALFxCvA8pojztUV3y6wSM4u3GWrh5v1iW8KlM2lUjjw7egmz2cWRrEMoS81Lk8fruxgZU/bgPTiP+CRDqB+u8X/TMvi0s5vN7peSvcH8UlzCaP9GDubetkYadzKKZCqfhn2pPmap5pUuPa6WxXJhszxIqllipn98qfOVasNZ4MKoKnqi7m/My/1ikBa9KkelPMEHeIwrfT7ifuTti2VHuwh6/foBDjkV+3n03oTAK1djD7DJl5gEIONwpB86j3xadhMk/T84VW0z87K1OT8EAavimsaFfIptps2dk8=
+  server: https://testpypi.python.org/pypi
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: olavmrk/python-ioctl
