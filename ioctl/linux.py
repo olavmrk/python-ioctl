@@ -100,9 +100,9 @@ def _ioc_request_type(request_type):
                          .format(request_type_type=request_type.__class__.__name__))
 
 def IOC(direction, request_type, request_nr, size):
-    """ Python implementation of the `_IOC(...)` macro from Linux.
+    """ Python implementation of the ``_IOC(...)`` macro from Linux.
 
-    This is a portable implementation of the `_IOC(...)` macro from Linux.
+    This is a portable implementation of the ``_IOC(...)`` macro from Linux.
     It takes a set of parameters, and calculates a ioctl request number based on those parameters.
 
     :param direction: Direction of data transfer in this ioctl. This can be one of:
@@ -134,10 +134,10 @@ def IOC(direction, request_type, request_nr, size):
     return calc.ioc(direction, request_type, request_nr, size)
 
 def IO(request_type, request_nr):
-    """ Python implementation of the `_IO(...)` macro from Linux.
+    """ Python implementation of the ``_IO(...)`` macro from Linux.
 
-    This is a portable implementation of the `_IO(...)` macro from Linux.
-    The `_IO(...)` macro calculates a ioctl request number for ioctl request that do not transfer any data.
+    This is a portable implementation of the ``_IO(...)`` macro from Linux.
+    The ``_IO(...)`` macro calculates a ioctl request number for ioctl request that do not transfer any data.
 
     :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
     :param request_nr: The ioctl request number. This is an integer.
@@ -149,10 +149,10 @@ def IO(request_type, request_nr):
     return calc.ioc(calc._IOC_NONE, request_type, request_nr, 0)
 
 def IOR(request_type, request_nr, size):
-    """ Python implementation of the `_IOR(...)` macro from Linux.
+    """ Python implementation of the ``_IOR(...)`` macro from Linux.
 
-    This is a portable implementation of the `_IOR(...)` macro from Linux.
-    The `_IOR(...)` macro calculates a ioctl request number for ioctl request that only pass read-only (input) data.
+    This is a portable implementation of the ``_IOR(...)`` macro from Linux.
+    The `_IOR(...)`` macro calculates a ioctl request number for ioctl request that only pass read-only (input) data.
 
     :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
     :param request_nr: The ioctl request number. This is an integer.
@@ -166,10 +166,10 @@ def IOR(request_type, request_nr, size):
     return calc.ioc(calc._IOC_READ, request_type, request_nr, size)
 
 def IOW(request_type, request_nr, size):
-    """ Python implementation of the `_IOW(...)` macro from Linux.
+    """ Python implementation of the ``_IOW(...)`` macro from Linux.
 
-    This is a portable implementation of the `_IOW(...)` macro from Linux.
-    The `_IOW(...)` macro calculates a ioctl request number for ioctl request that only pass write-only (output) data.
+    This is a portable implementation of the ``_IOW(...)`` macro from Linux.
+    The ``_IOW(...)`` macro calculates a ioctl request number for ioctl request that only pass write-only (output) data.
 
     :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
     :param request_nr: The ioctl request number. This is an integer.
@@ -183,10 +183,10 @@ def IOW(request_type, request_nr, size):
     return calc.ioc(calc._IOC_WRITE, request_type, request_nr, size)
 
 def IOWR(request_type, request_nr, size):
-    """ Python implementation of the `_IOWR(...)` macro from Linux.
+    """ Python implementation of the ``_IOWR(...)`` macro from Linux.
 
-    This is a portable implementation of the `_IOWR(...)` macro from Linux.
-    The `_IOWR(...)` macro calculates a ioctl request number for ioctl request that use the data for both reading (input) and writing (output).
+    This is a portable implementation of the ``_IOWR(...)`` macro from Linux.
+    The ``_IOWR(...)`` macro calculates a ioctl request number for ioctl request that use the data for both reading (input) and writing (output).
 
     :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
     :param request_nr: The ioctl request number. This is an integer.

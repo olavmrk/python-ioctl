@@ -18,14 +18,14 @@ else:
         return bytes(value)
 
 def ioctl_ptr_int(fd, request, value=0):
-    """Call ioctl() with an `int *` argument.
+    """Call ioctl() with an ``int *`` argument.
 
     :param fd: File descriptor to operate on.
     :param request: The ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
-    :return: Tuple of `(ioctl_return, updated_value)`.
-            `ioctl_return` is the return value of the ioctl()-call, while
-            `updated_value` is the value of the integer argument after the
+    :return: Tuple of ``(ioctl_return, updated_value)``.
+            ``ioctl_return`` is the return value of the ioctl()-call, while
+            ``updated_value`` is the value of the integer argument after the
             ioctl()-call.
     """
     res = ctypes.c_int(value)
@@ -33,14 +33,14 @@ def ioctl_ptr_int(fd, request, value=0):
     return (ioctl_return, res.value)
 
 def ioctl_ptr_size_t(fd, request, value=0):
-    """Call ioctl() with a `size_t *` argument.
+    """Call ioctl() with a ``size_t *`` argument.
 
     :param fd: File descriptor to operate on.
     :param request: ioctl request to call.
     :param value: Optional value to pass to the ioctl() operation. Defaults to 0.
-    :return: Tuple of `(ioctl_return, updated_value)`.
-             `ioctl_return` is the return value of the ioctl()-call, while
-             `updated_value` is the value of the size_t argument after the
+    :return: Tuple of ``(ioctl_return, updated_value)``.
+             ``ioctl_return`` is the return value of the ioctl()-call, while
+             ``updated_value`` is the value of the size_t argument after the
              ioctl()-call.
     """
     res = ctypes.c_size_t(value)
@@ -48,19 +48,19 @@ def ioctl_ptr_size_t(fd, request, value=0):
     return (ioctl_return, res.value)
 
 def ioctl_ptr_buffer(fd, request, value=None, length=None):
-    """Call ioctl() with a `void *` argument.
+    """Call ioctl() with a ``void *`` argument.
 
-    You must specify either the `value` parameter or the `length` parameter.
-    If the `length` parameter is specified, this function will allocate a byte
+    You must specify either the ``value`` parameter or the ``length`` parameter.
+    If the ``length`` parameter is specified, this function will allocate a byte
     buffer of the specified length to pass to ioctl().
 
     :param fd: File descriptor to operate on.
     :param request: ioctl request to call.
     :param value: Optional contents of the byte buffer at the start of the call.
     :param length: Optional length of the byte buffer.
-    :return: Tuple of `(ioctl_return, updated_value)`.
-             `ioctl_return` is the return value of the ioctl()-call, while
-             `updated_value` is the contents of the buffer after the ioctl()-call.
+    :return: Tuple of ``(ioctl_return, updated_value)``.
+             ``ioctl_return`` is the return value of the ioctl()-call, while
+             ``updated_value`` is the contents of the buffer after the ioctl()-call.
     """
     request = int(request)
     if value is None and length is None:
