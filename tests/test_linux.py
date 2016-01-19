@@ -96,7 +96,7 @@ class TestLinux(unittest.TestCase):
     def test_ioc_invalid_direction(self):
         with self.assertRaises(ValueError) as context:
             ioctl.linux.IOC(direction='wr', request_type=0, request_nr=0, size=0)
-        self.assertEqual(context.exception.message, 'direction must be None, \'r\', \'w\' or \'rw\'.')
+        self.assertEqual(str(context.exception), 'direction must be None, \'r\', \'w\' or \'rw\'.')
 
 def _main():
     import platform
