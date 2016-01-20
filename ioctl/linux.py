@@ -209,6 +209,7 @@ def io_fn(request_type, request_nr):
 
     :Example:
       ::
+
           import os
           import ioctl.linux
           blkrrpart = ioctl.linux.io_fn(0x12, 95)
