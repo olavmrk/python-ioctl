@@ -16,7 +16,7 @@ master_doc = 'index'
 
 project = u'python-ioctl'
 
-release = setuptools_scm.get_version()
+release = setuptools_scm.get_version(root='..')
 # Calculate the version based on the first two parts of the release. I.e. "1.2.3" => "1.2"
 version = '.'.join(release.split('.', 3)[:2])
 
