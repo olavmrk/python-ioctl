@@ -1,0 +1,3 @@
+# This requirements file is for Read the Docs.
+# It is enabled at: https://readthedocs.org/dashboard/python-ioctl/advanced/
+setuptools_scm
