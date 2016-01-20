@@ -1,4 +1,5 @@
 import ctypes
+import fcntl
 import platform
 
 class _IoctlGeneric(object):
@@ -198,3 +199,27 @@ def IOWR(request_type, request_nr, size):
     request_type = _ioc_request_type(request_type)
     size = _ioc_type_size(size)
     return calc.ioc(calc._IOC_READ|calc._IOC_WRITE, request_type, request_nr, size)
+
+def io_fn(request_type, request_nr):
+    """ Creates a helper function for invoking a ``IO(...)``-based ioctl() on Linux.
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :return: A function that takes in a file descriptor and calls this ioctl()-operation on in.
+
+    :Example:
+      ::
+          import os
+          import ioctl.linux
+          blkrrpart = ioctl.linux.io_fn(0x12, 95)
+          fd = os.open('/dev/sda', os.O_RDONLY)
+          blkrrpart(fd)
+    """
+
+    request = IO(request_type, request_nr)
+    def fn(fd):
+        if not isinstance(fd, int):
+            raise TypeError('fd must be a file descriptor.')
+        fcntl.ioctl(fd, request)
+    fn.__name__ = '_io_fn_impl_{type}_{nr}'.format(type=request_type, nr=request_nr)
+    return fn
