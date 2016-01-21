@@ -224,3 +224,33 @@ def io_fn(request_type, request_nr):
         fcntl.ioctl(fd, request)
     fn.__name__ = '_io_fn_impl_{type}_{nr}'.format(type=request_type, nr=request_nr)
     return fn
+
+def ior_fn(request_type, request_nr, datatype):
+    """ Creates a helper function for invoking a ``IOR(...)``-based ioctl() on Linux.
+
+    :param request_type: The ioctl request type. This can be specified as either a string ``'R'`` or an integer ``123``.
+    :param request_nr: The ioctl request number. This is an integer.
+    :param datatype: The datatype that is retrieved by the ioctl()-call. This must be a ctypes type.
+    :return: A function that takes in a file descriptor calls this ioctl()-operation on in, and returns the return value
+
+    :Example:
+      ::
+
+          import ctypes
+          import os
+          import ioctl.linux
+          rndgetentcnt = ioctl.linux.ior_fn('R', 0x00, ctypes.c_int)
+          fd = os.open('/dev/random', os.O_RDONLY)
+          entropy_avail = rndgetentcnt(fd)
+          print('entropy_avail:', entropy_avail)
+    """
+
+    request = IOR(request_type, request_nr, datatype)
+    def fn(fd):
+        if not isinstance(fd, int):
+            raise TypeError('fd must be a file descriptor.')
+        res = datatype()
+        fcntl.ioctl(fd, request, res)
+        return res.value
+    fn.__name__ = '_ior_fn_impl_{type}_{nr}'.format(type=request_type, nr=request_nr)
+    return fn
