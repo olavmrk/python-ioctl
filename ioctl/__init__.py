@@ -1,5 +1,7 @@
 import ctypes
+import ctypes.util
 import fcntl
+import os
 import sys
 
 # In Python 2, the bytearray()-type does not support the buffer interface,
@@ -16,6 +18,43 @@ else:
         return bytearray(value)
     def _from_bytearray(value):
         return bytes(value)
+
+try:
+    libc_name = ctypes.util.find_library('c')
+    if not libc_name:
+        raise Exception('Unable to find c library')
+    libc = ctypes.CDLL(libc_name, use_errno=True)
+    ioctl_fn = libc.ioctl
+except Exception as e:
+    ioctl_fn = None
+    ioctl_err = e
+
+def ioctl(fd, request, *args):
+    """ Call the C library ioctl()-function directly.
+
+    This function invokes ioctl() through ctypes. This gives
+    greater control over the parameters passed to ioctl().
+
+    :param fd: File descriptor to operate on.
+    :param request: The ioctl request to call.
+    :param args: parameter to pass to ioctl.
+    :return: The return value of the ioctl-call.
+    """
+
+    if not isinstance(fd, int):
+        raise TypeError('fd must be an integer, but was {}'.format(fd.__class__.__name__))
+    if fd < 0:
+        raise ValueError('fd cannot be negative')
+    if not isinstance(request, int) and not isinstance(request, long):
+        raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
+    if not ioctl_fn:
+        raise NotImplementedError('Unable to get ioctl()-function from C library: {err}'.format(err=str(ioctl_err)))
+    ioctl_args = [ ctypes.c_int(fd), ctypes.c_ulong(request)] + list(args)
+    res = ioctl_fn(*ioctl_args)
+    if res < 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err))
+    return res
 
 def ioctl_ptr_int(fd, request, value=0):
     """Call ioctl() with an ``int *`` argument.
