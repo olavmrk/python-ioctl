@@ -4,6 +4,10 @@ import fcntl
 import os
 import sys
 
+from ._paramcheck import (
+    check_fd,
+)
+
 # In Python 2, the bytearray()-type does not support the buffer interface,
 # and can therefore not be used in ioctl().
 # This creates a couple of helper functions for converting to and from 
@@ -41,10 +45,7 @@ def ioctl(fd, request, *args):
     :return: The return value of the ioctl-call.
     """
 
-    if not isinstance(fd, int):
-        raise TypeError('fd must be an integer, but was {}'.format(fd.__class__.__name__))
-    if fd < 0:
-        raise ValueError('fd cannot be negative')
+    check_fd(fd)
     if not isinstance(request, int) and not isinstance(request, long):
         raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
     if not ioctl_fn:
@@ -105,10 +106,7 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
         return_python = issubclass(datatype, ctypes._SimpleCData)
 
     def fn(fd):
-        if not isinstance(fd, int):
-            raise TypeError('fd must be an integer, but was {}'.format(fd.__class__.__name__))
-        if fd < 0:
-            raise ValueError('fd cannot be negative')
+        check_fd(fd)
         value = datatype()
         ioctl(fd, request, ctypes.byref(value))
         if return_python:
@@ -128,6 +126,7 @@ def ioctl_ptr_int(fd, request, value=0):
             ``updated_value`` is the value of the integer argument after the
             ioctl()-call.
     """
+    check_fd(fd)
     res = ctypes.c_int(value)
     ioctl_return = fcntl.ioctl(fd, request, res)
     return (ioctl_return, res.value)
@@ -143,6 +142,7 @@ def ioctl_ptr_size_t(fd, request, value=0):
              ``updated_value`` is the value of the size_t argument after the
              ioctl()-call.
     """
+    check_fd(fd)
     res = ctypes.c_size_t(value)
     ioctl_return = fcntl.ioctl(fd, request, res)
     return (ioctl_return, res.value)
@@ -162,6 +162,7 @@ def ioctl_ptr_buffer(fd, request, value=None, length=None):
              ``ioctl_return`` is the return value of the ioctl()-call, while
              ``updated_value`` is the contents of the buffer after the ioctl()-call.
     """
+    check_fd(fd)
     request = int(request)
     if value is None and length is None:
         raise ValueError('Must specify either `value` or `length`')
