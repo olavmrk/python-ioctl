@@ -6,6 +6,7 @@ import sys
 
 from ._paramcheck import (
     check_fd,
+    check_request,
 )
 
 # In Python 2, the bytearray()-type does not support the buffer interface,
@@ -46,8 +47,7 @@ def ioctl(fd, request, *args):
     """
 
     check_fd(fd)
-    if not isinstance(request, int) and not isinstance(request, long):
-        raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
+    check_request(request)
     if not ioctl_fn:
         raise NotImplementedError('Unable to get ioctl()-function from C library: {err}'.format(err=str(ioctl_err)))
     ioctl_args = [ ctypes.c_int(fd), ctypes.c_ulong(request)] + list(args)
@@ -83,10 +83,7 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
           entropy_avail = rndgetentcnt(fd)
     """
 
-    if not isinstance(request, int) and not isinstance(request, long):
-        raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
-    if request < 0:
-        raise ValueError('request cannot be negative')
+    check_request(request)
 
     valid_datatypes = (
         ctypes._SimpleCData,
@@ -127,6 +124,7 @@ def ioctl_ptr_int(fd, request, value=0):
             ioctl()-call.
     """
     check_fd(fd)
+    check_request(request)
     res = ctypes.c_int(value)
     ioctl_return = fcntl.ioctl(fd, request, res)
     return (ioctl_return, res.value)
@@ -143,6 +141,7 @@ def ioctl_ptr_size_t(fd, request, value=0):
              ioctl()-call.
     """
     check_fd(fd)
+    check_request(request)
     res = ctypes.c_size_t(value)
     ioctl_return = fcntl.ioctl(fd, request, res)
     return (ioctl_return, res.value)
@@ -163,7 +162,7 @@ def ioctl_ptr_buffer(fd, request, value=None, length=None):
              ``updated_value`` is the contents of the buffer after the ioctl()-call.
     """
     check_fd(fd)
-    request = int(request)
+    check_request(request)
     if value is None and length is None:
         raise ValueError('Must specify either `value` or `length`')
     if value is not None and length is not None:
