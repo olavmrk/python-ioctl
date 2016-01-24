@@ -69,6 +69,17 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
     :param datatype: The data type of the data returned by the ioctl() call.
     :param return_python: Whether we should attempt to convert the return data to a Python value. Defaults to True for fundamental ctypes data types.
     :return: A function for invoking the specified ioctl().
+
+    :Example:
+      ::
+
+          import os
+          import ioctl
+          import ioctl.linux
+          RNDGETENTCNT = ioctl.linux.IOR('R', 0x00, ctypes.c_int)
+          rndgetentcnt = ioctl.ioctl_fn_ptr_r(RNDGETENTCNT, ctypes.c_int)
+          fd = os.open('/dev/random', os.O_RDONLY)
+          entropy_avail = rndgetentcnt(fd)
     """
 
     if not isinstance(request, int) and not isinstance(request, long):
