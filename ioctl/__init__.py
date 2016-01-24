@@ -56,6 +56,56 @@ def ioctl(fd, request, *args):
         raise OSError(err, os.strerror(err))
     return res
 
+def ioctl_fn_ptr_r(request, datatype, return_python=None):
+    """ Create a helper function for invoking a ioctl() read call.
+
+    This function creates a helper function for creating a ioctl() read function.
+    It will call the ioctl() function with a pointer to data, and return the contents
+    of the data after the call.
+
+    If the datatype is a integer type (int, long, etc), it will be returned as a python int or long.
+
+    :param request: The ioctl request to call.
+    :param datatype: The data type of the data returned by the ioctl() call.
+    :param return_python: Whether we should attempt to convert the return data to a Python value. Defaults to True for fundamental ctypes data types.
+    :return: A function for invoking the specified ioctl().
+    """
+
+    if not isinstance(request, int) and not isinstance(request, long):
+        raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
+    if request < 0:
+        raise ValueError('request cannot be negative')
+
+    valid_datatypes = (
+        ctypes._SimpleCData,
+        ctypes.Union,
+        ctypes.BigEndianStructure,
+        ctypes.LittleEndianStructure,
+        ctypes.Structure,
+        )
+    if not any([ issubclass(datatype, cls) for cls in valid_datatypes ]):
+        raise TypeError('datatype must be a ctypes data type, but was {}'.format(datatype.__name__))
+
+    if return_python is not None and not isinstance(return_python, bool):
+        raise TypeError('return_python must be None or a boolean, but was {}'.format(return_python.__class__.__name__))
+
+
+    if return_python is None:
+        return_python = issubclass(datatype, ctypes._SimpleCData)
+
+    def fn(fd):
+        if not isinstance(fd, int):
+            raise TypeError('fd must be an integer, but was {}'.format(fd.__class__.__name__))
+        if fd < 0:
+            raise ValueError('fd cannot be negative')
+        value = datatype()
+        ioctl(fd, request, ctypes.byref(value))
+        if return_python:
+            return value.value
+        else:
+            return value
+    return fn
+
 def ioctl_ptr_int(fd, request, value=0):
     """Call ioctl() with an ``int *`` argument.
 
