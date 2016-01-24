@@ -5,6 +5,7 @@ import os
 import sys
 
 from ._paramcheck import (
+    check_ctypes_datatype,
     check_fd,
     check_request,
 )
@@ -84,17 +85,7 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
     """
 
     check_request(request)
-
-    valid_datatypes = (
-        ctypes._SimpleCData,
-        ctypes.Union,
-        ctypes.BigEndianStructure,
-        ctypes.LittleEndianStructure,
-        ctypes.Structure,
-        )
-    if not any([ issubclass(datatype, cls) for cls in valid_datatypes ]):
-        raise TypeError('datatype must be a ctypes data type, but was {}'.format(datatype.__name__))
-
+    check_ctypes_datatype(datatype)
     if return_python is not None and not isinstance(return_python, bool):
         raise TypeError('return_python must be None or a boolean, but was {}'.format(return_python.__class__.__name__))
 

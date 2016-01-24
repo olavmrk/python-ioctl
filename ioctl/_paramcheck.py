@@ -1,3 +1,4 @@
+import ctypes
 
 def check_fd(fd):
     """ Validate that a fd parameter looks like a file descriptor.
@@ -24,3 +25,16 @@ def check_request(request):
         raise TypeError('request must be an integer, but was {}'.format(request.__class__.__name__))
     if request < 0:
         raise ValueError('request cannot be negative')
+
+def check_ctypes_datatype(datatype):
+    valid_datatypes = (
+        ctypes._SimpleCData,
+        ctypes.Union,
+        ctypes.BigEndianStructure,
+        ctypes.LittleEndianStructure,
+        ctypes.Structure,
+        )
+    for t in valid_datatypes:
+        if issubclass(datatype, t):
+            return
+    raise TypeError('datatype must be a ctypes data type, but was {}'.format(datatype.__name__))
