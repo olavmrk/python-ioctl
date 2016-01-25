@@ -16,6 +16,8 @@ Example
   import ioctl.linux
 
   RNDGETENTCNT = ioctl.linux.IOR('R', 0x00, ctypes.c_int)
+  rndgetentcnt = ioctl.ioctl_fn_ptr_r(RNDGETENTCNT, ctypes.c_int)
+
   fd = os.open('/dev/random', os.O_RDONLY)
-  _, entropy_avail = ioctl.ioctl_ptr_size_t(fd, RNDGETENTCNT)
+  entropy_avail = rndgetentcnt(fd)
   print('entropy_avail:', entropy_avail)
