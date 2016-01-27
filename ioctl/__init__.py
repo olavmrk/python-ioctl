@@ -25,14 +25,18 @@ else:
     def _from_bytearray(value):
         return bytes(value)
 
-def _init_ioctl():
+_ioctl_fn = None
+def _get_ioctl_fn():
+    global _ioctl_fn
+    if _ioctl_fn is not None:
+        return _ioctl_fn
     libc_name = ctypes.util.find_library('c')
     if not libc_name:
         raise Exception('Unable to find c library')
     libc = ctypes.CDLL(libc_name, use_errno=True)
-    return libc.ioctl
+    _ioctl_fn = libc.ioctl
+    return _ioctl_fn
 
-ioctl_fn = None
 def ioctl(fd, request, *args):
     """ Call the C library ioctl()-function directly.
 
@@ -49,12 +53,10 @@ def ioctl(fd, request, *args):
     check_request(request)
     ioctl_args = [ ctypes.c_int(fd), ctypes.c_ulong(request)] + list(args)
 
-    global ioctl_fn
-    if ioctl_fn is None:
-        try:
-            ioctl_fn = _init_ioctl()
-        except Exception as e:
-            raise NotImplementedError('Unable to get ioctl()-function from C library: {err}'.format(err=str(e)))
+    try:
+        ioctl_fn = _get_ioctl_fn()
+    except Exception as e:
+        raise NotImplementedError('Unable to get ioctl()-function from C library: {err}'.format(err=str(e)))
 
     res = ioctl_fn(*ioctl_args)
     if res < 0:
