@@ -77,6 +77,24 @@ class IoctlMock(mock.MagicMock):
 
 class TestMain(unittest.TestCase):
 
+    @mock.patch('ioctl._get_ioctl_fn')
+    def test_ioctl(self, get_ioctl_fn_mock):
+        ioctl_fn = mock.Mock()
+        ioctl_fn.return_value = 42
+        get_ioctl_fn_mock.return_value = ioctl_fn
+        value_ptr = ctypes.byref(ctypes.c_int(13))
+        ret = ioctl.ioctl(1, 2, value_ptr)
+        assert ret == 42
+        assert ioctl_fn.call_count == 1
+        args = ioctl_fn.call_args[0]
+        assert len(args) == 3
+        assert type(args[0]) == type(ctypes.c_int(1))
+        assert args[0].value == 1
+        assert type(args[1]) == type(ctypes.c_ulong(2))
+        assert args[1].value == 2
+        assert args[2] == value_ptr
+
+
     @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_size_t(123), return_value=321)
     def test_ioctl_ptr_size_t(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_size_t(5, 7)
