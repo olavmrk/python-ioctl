@@ -109,6 +109,38 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
             return value
     return fn
 
+def ioctl_fn_ptr_w(request, datatype):
+    """ Create a helper function for invoking a ioctl() write call.
+
+    This function creates a helper function for creating a ioctl() write function.
+    It will call the ioctl() function with a pointer to the data.
+
+    :param request: The ioctl request to call.
+    :param datatype: The data type of the data to be passed to the ioctl() call.
+    :return: A function for invoking the specified ioctl().
+
+    :Example:
+      ::
+
+          import os
+          import ioctl
+          import ioctl.linux
+          TIOCSETD = 0x5423 # Actual value depends on arch, this is from asm-generic.
+          N_PPP = 3
+          tiocsetd = ioctl.ioctl_fn_ptr_w(TIOCSETD, ctypes.c_int)
+          fd = os.open('/dev/ttyS0', os.O_RDRW)
+          tiocsetd(fd, N_PPP)
+    """
+
+    check_request(request)
+    check_ctypes_datatype(datatype)
+
+    def fn(fd, value):
+        check_fd(fd)
+        value = datatype(value)
+        ioctl(fd, request, ctypes.byref(value))
+    return fn
+
 def ioctl_ptr_int(fd, request, value=0):
     """Call ioctl() with an ``int *`` argument.
 
