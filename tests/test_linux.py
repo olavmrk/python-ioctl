@@ -89,6 +89,9 @@ class TestLinux(unittest.TestCase):
         except:
             # For some reason unable to compile & run the ioctl-printing program.
             # Could be missing the GCC compiler or the linux headers.
+            if 'IOCTL_FORCE_NATIVE_TEST' in os.environ:
+                # This flag is available so that we can make sure that the native code actually works on Travis.
+                raise
             raise unittest.SkipTest('Unable to build & run native program for dumping ioctl values.')
         self._test_values(native_values)
 

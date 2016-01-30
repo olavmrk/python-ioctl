@@ -5,7 +5,7 @@ python:
   - "3.4"
   - "3.5"
 install: python setup.py install
-script: python setup.py test
+script: env IOCTL_FORCE_NATIVE_TEST=set python setup.py test
 deploy:
   provider: pypi
   user: olavmrk
