@@ -81,6 +81,7 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
     :Example:
       ::
 
+          import ctypes
           import os
           import ioctl
           import ioctl.linux
