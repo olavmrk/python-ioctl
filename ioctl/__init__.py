@@ -112,8 +112,11 @@ def ioctl_fn_ptr_r(request, datatype, return_python=None):
 def ioctl_fn_ptr_w(request, datatype):
     """ Create a helper function for invoking a ioctl() write call.
 
-    This function creates a helper function for creating a ioctl() write function.
-    It will call the ioctl() function with a pointer to the data.
+    This function creates a helper function for creating a ioctl() write function that uses a pointer argument.
+    E.g. if you have a ioctl() call like::
+
+      int param = 42;
+      ioctl(fd, RNDADDTOENTCNT, &param);
 
     :param request: The ioctl request to call.
     :param datatype: The data type of the data to be passed to the ioctl() call.
@@ -122,14 +125,14 @@ def ioctl_fn_ptr_w(request, datatype):
     :Example:
       ::
 
+          import ctypes
           import os
           import ioctl
           import ioctl.linux
-          TIOCSETD = 0x5423 # Actual value depends on arch, this is from asm-generic.
-          N_PPP = 3
-          tiocsetd = ioctl.ioctl_fn_ptr_w(TIOCSETD, ctypes.c_int)
-          fd = os.open('/dev/ttyS0', os.O_RDRW)
-          tiocsetd(fd, N_PPP)
+          RNDADDTOENTCNT = ioctl.linux.IOW('R', 0x01, ctypes.c_int)
+          rndaddtoentcnt = ioctl.ioctl_fn_ptr_w(RNDADDTOENTCNT, ctypes.c_int)
+          fd = os.open('/dev/random', os.O_RDONLY)
+          rndaddtoentcnt(fd, -100) # Decrease entropy by 100 bits.
     """
 
     check_request(request)
