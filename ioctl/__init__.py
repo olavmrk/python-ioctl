@@ -145,6 +145,41 @@ def ioctl_fn_ptr_w(request, datatype):
         ioctl(fd, request, ctypes.byref(value))
     return fn
 
+def ioctl_fn_w(request, datatype):
+    """ Create a helper function for invoking a ioctl() write call.
+
+    This function creates a helper function for creating a ioctl() write function that directly passes a single argument.
+    E.g. if you have a ioctl() call like::
+
+      unsigned long fd = 3;
+      ioctl(fd, LOOP_SET_FD, value);
+
+    :param request: The ioctl request to call.
+    :param datatype: The data type of the data to be passed to the ioctl() call.
+    :return: A function for invoking the specified ioctl().
+
+    :Example:
+      ::
+
+          import ctypes
+          import os
+          import ioctl
+          LOOP_SET_FD = 0x4C00
+          loop_set_fd = ioctl.ioctl_fn_w(LOOP_SET_FD, ctypes.c_ulong)
+          loop_fd = os.open('/dev/loop0', os.O_RDONLY)
+          file_fd = os.open('/tmp/data', os.O_RDWR)
+          loop_set_fd(loop_fd, file_fd)
+    """
+
+    check_request(request)
+    check_ctypes_datatype(datatype)
+
+    def fn(fd, value):
+        check_fd(fd)
+        value = datatype(value)
+        ioctl(fd, request, value)
+    return fn
+
 def ioctl_ptr_int(fd, request, value=0):
     """Call ioctl() with an ``int *`` argument.
 

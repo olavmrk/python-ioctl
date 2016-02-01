@@ -123,6 +123,19 @@ class TestMain(unittest.TestCase):
         fn = ioctl.ioctl_fn_ptr_w(32, ctypes.c_int)
         fn(12, 42)
 
+    @mock.patch('ioctl.ioctl')
+    def test_ioctl_fn_w(self, ioctl_mock):
+        def _handle_ioctl(fd, request, int_val):
+            assert fd == 12
+            assert request == 32
+            assert type(int_val) == ctypes.c_int
+            assert int_val.value == 42
+            return mock.DEFAULT
+        ioctl_mock.side_effect = _handle_ioctl
+
+        fn = ioctl.ioctl_fn_w(32, ctypes.c_int)
+        fn(12, 42)
+
     @mock.patch('fcntl.ioctl', new_callable=IoctlMock, set_value=ctypes.c_size_t(123), return_value=321)
     def test_ioctl_ptr_size_t(self, ioctl_mock):
         ret = ioctl.ioctl_ptr_size_t(5, 7)
