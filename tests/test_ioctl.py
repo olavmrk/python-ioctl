@@ -124,6 +124,22 @@ class TestMain(unittest.TestCase):
         fn(12, 42)
 
     @mock.patch('ioctl.ioctl')
+    @mock.patch('ctypes.byref', new=ctypes.pointer) # Ensure that we can access the pointer.
+    def test_ioctl_fn_ptr_rw(self, ioctl_mock):
+        def _handle_ioctl(fd, request, int_ptr):
+            assert fd == 12
+            assert request == 32
+            assert type(int_ptr) == ctypes.POINTER(ctypes.c_int)
+            assert int_ptr.contents.value == 24
+            int_ptr.contents.value = 42
+            return mock.DEFAULT
+        ioctl_mock.side_effect = _handle_ioctl
+
+        fn = ioctl.ioctl_fn_ptr_rw(32, ctypes.c_int)
+        res = fn(12, 24)
+        assert res == 42
+
+    @mock.patch('ioctl.ioctl')
     def test_ioctl_fn_w(self, ioctl_mock):
         def _handle_ioctl(fd, request, int_val):
             assert fd == 12

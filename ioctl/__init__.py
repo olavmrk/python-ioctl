@@ -145,6 +145,52 @@ def ioctl_fn_ptr_w(request, datatype):
         ioctl(fd, request, ctypes.byref(value))
     return fn
 
+def ioctl_fn_ptr_rw(request, datatype, return_python=None):
+    """ Create a helper function for invoking a ioctl() read & write call.
+
+    This function creates a helper function for a ioctl() operation that both reads and writes data.
+    Typically the case is a ioctl() operation that receives a pointer to data, performs an operation and updates the data at the pointer.
+    E.g. if you have a ioctl() call like::
+
+      int timeout = 45;
+      ioctl(fd, WDIOF_SETTIMEOUT, &timeout);
+      printf("Actual timeout: %d\n", timeout);
+
+    :param request: The ioctl request to call.
+    :param datatype: The data type of the data to be passed to the ioctl() call.
+    :param return_python: Whether we should attempt to convert the return data to a Python value. Defaults to True for fundamental ctypes data types.
+    :return: A function for invoking the specified ioctl().
+
+    :Example:
+      ::
+
+          import ctypes
+          import os
+          import ioctl
+          WDIOF_SETTIMEOUT = 0x0080
+          wdiof_settimeout = ioctl.ioctl_fn_ptr_w(WDIOF_SETTIMEOUT, ctypes.c_int)
+          fd = os.open('/dev/watchdog', os.O_RDONLY)
+          actual_timeout = wdiof_settimeout(fd, 60)
+    """
+
+    check_request(request)
+    check_ctypes_datatype(datatype)
+    if return_python is not None and not isinstance(return_python, bool):
+        raise TypeError('return_python must be None or a boolean, but was {}'.format(return_python.__class__.__name__))
+
+    if return_python is None:
+        return_python = issubclass(datatype, ctypes._SimpleCData)
+
+    def fn(fd, value):
+        check_fd(fd)
+        value = datatype(value)
+        ioctl(fd, request, ctypes.byref(value))
+        if return_python:
+            return value.value
+        else:
+            return value
+    return fn
+
 def ioctl_fn_w(request, datatype):
     """ Create a helper function for invoking a ioctl() write call.
 
