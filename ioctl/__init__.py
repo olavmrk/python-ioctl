@@ -159,7 +159,7 @@ def ioctl_fn_ptr_rw(request, datatype, return_python=None):
           import os
           import ioctl
           WDIOF_SETTIMEOUT = 0x0080
-          wdiof_settimeout = ioctl.ioctl_fn_ptr_w(WDIOF_SETTIMEOUT, ctypes.c_int)
+          wdiof_settimeout = ioctl.ioctl_fn_ptr_rw(WDIOF_SETTIMEOUT, ctypes.c_int)
           fd = os.open('/dev/watchdog', os.O_RDONLY)
           actual_timeout = wdiof_settimeout(fd, 60)
     """
