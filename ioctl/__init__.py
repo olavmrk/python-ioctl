@@ -8,6 +8,14 @@ from ._paramcheck import (
     check_request,
 )
 
+__all__ = (
+    'ioctl',
+    'ioctl_fn_ptr_r',
+    'ioctl_fn_ptr_w',
+    'ioctl_fn_ptr_rw',
+    'ioctl_fn_w',
+)
+
 _ioctl_fn = None
 def _get_ioctl_fn():
     global _ioctl_fn

@@ -2,6 +2,14 @@ import ctypes
 import fcntl
 import platform
 
+__all__ = (
+    'IOC',
+    'IO',
+    'IOR',
+    'IOW',
+    'IOWR',
+)
+
 class _IoctlGeneric(object):
     _IOC_NRBITS = 8
     _IOC_TYPEBITS = 8
