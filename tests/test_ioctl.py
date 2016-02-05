@@ -58,7 +58,7 @@ class TestMain(unittest.TestCase):
 
     @mock.patch('ioctl.ioctl')
     @mock.patch('ctypes.byref', new=ctypes.pointer) # Ensure that we can access the pointer.
-    def test_ioctl_fn_ptr_rw(self, ioctl_mock):
+    def test_ioctl_fn_ptr_wr(self, ioctl_mock):
         def _handle_ioctl(fd, request, int_ptr):
             assert fd == 12
             assert request == 32
@@ -68,7 +68,7 @@ class TestMain(unittest.TestCase):
             return mock.DEFAULT
         ioctl_mock.side_effect = _handle_ioctl
 
-        fn = ioctl.ioctl_fn_ptr_rw(32, ctypes.c_int)
+        fn = ioctl.ioctl_fn_ptr_wr(32, ctypes.c_int)
         res = fn(12, 24)
         assert res == 42
 

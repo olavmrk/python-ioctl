@@ -12,7 +12,7 @@ __all__ = (
     'ioctl',
     'ioctl_fn_ptr_r',
     'ioctl_fn_ptr_w',
-    'ioctl_fn_ptr_rw',
+    'ioctl_fn_ptr_wr',
     'ioctl_fn_w',
 )
 
@@ -136,7 +136,7 @@ def ioctl_fn_ptr_w(request, datatype):
         ioctl(fd, request, ctypes.byref(value))
     return fn
 
-def ioctl_fn_ptr_rw(request, datatype, return_python=None):
+def ioctl_fn_ptr_wr(request, datatype, return_python=None):
     """ Create a helper function for invoking a ioctl() read & write call.
 
     This function creates a helper function for a ioctl() operation that both reads and writes data.
@@ -159,7 +159,7 @@ def ioctl_fn_ptr_rw(request, datatype, return_python=None):
           import os
           import ioctl
           WDIOF_SETTIMEOUT = 0x0080
-          wdiof_settimeout = ioctl.ioctl_fn_ptr_rw(WDIOF_SETTIMEOUT, ctypes.c_int)
+          wdiof_settimeout = ioctl.ioctl_fn_ptr_wr(WDIOF_SETTIMEOUT, ctypes.c_int)
           fd = os.open('/dev/watchdog', os.O_RDONLY)
           actual_timeout = wdiof_settimeout(fd, 60)
     """
